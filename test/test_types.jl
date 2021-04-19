@@ -7,6 +7,7 @@ struct CompositeObject
 end
 components(obj::CompositeObject) = obj.components
 displaysymbol(obj::CompositeObject) = 'C'
+Display.object_parentheses(::CompositeObject) = false
 Base.show(io::IO, mime::MIME"text/plain", obj::CompositeObject) =
     composite_show(io, mime, obj)
 
