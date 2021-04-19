@@ -9,6 +9,7 @@ CompositeTypes.jl defines an interface for types that consist of multiple compon
 - `components(x)`: returns the components of `x`
 - `component(x, I...)`: returns `components(x)[I...]`
 - `ncomponents(x)`: the number of components of `x`
+- `setcomponent!(x, v, I...)`: (if applicable) set a component to a given value
 
 A type can declare to be composite simply by implementing `components(x)`, and
 returning something with non-zero `length`.

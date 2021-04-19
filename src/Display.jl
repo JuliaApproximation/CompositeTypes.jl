@@ -1,5 +1,9 @@
 module Display
 
+# The methodology of these routines is based on an implementation of
+# @roelmatthysen for the display of complicated structures in the package
+# BasisFunctions.jl
+
 export composite_show,
     composite_show_compact,
     composite_displaystencil
