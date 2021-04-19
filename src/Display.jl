@@ -1,6 +1,6 @@
 module Display
 
-# The methodology of these routines is based on an implementation of
+# The methodology of these routines is based on an initial implementation by
 # @roelmatthysen for the display of complicated structures in the package
 # BasisFunctions.jl
 
@@ -195,7 +195,7 @@ end
 "If this object appears in a more complicated expression, does it require parentheses?"
 function object_parentheses(object)
     if iscomposite(object)
-        is_comma_separated(object)
+        !is_comma_separated(object)
     else
         false
     end
