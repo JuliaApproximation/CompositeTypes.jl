@@ -5,9 +5,11 @@ import CompositeTypes.Display: displaysymbol
 struct CompositeObject
     components
 end
+CompositeObject(components...) = CompositeObject(components)
 components(obj::CompositeObject) = obj.components
 displaysymbol(obj::CompositeObject) = 'C'
 Display.object_parentheses(::CompositeObject) = false
+Display.displaystencil(obj::CompositeObject) = composite_displaystencil(obj)
 Base.show(io::IO, mime::MIME"text/plain", obj::CompositeObject) =
     composite_show(io, mime, obj)
 

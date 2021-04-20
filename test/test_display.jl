@@ -16,27 +16,28 @@ const textmime = MIME"text/plain"()
     c1 = CompositeObject(A1)
     c2 = CompositeObject(A2)
     c3 = CompositeObject(A3)
+    @test repr(c1) == "CompositeObject(1:4)"
+    show(io, textmime, c1)
+    @test String(take!(io)) == "CompositeObject(1, 2, 3, 4)"
     o2 = SetUnion((c1, c2, c3))
     @test Display.hasstencil(o2)
     @test Display.displaystencil(o2) == Any[c1, " ∪ ", c2, " ∪ ", c3]
     @test repr(o2) == "SetUnion((CompositeObject(1:4), CompositeObject(5:10), CompositeObject(11:20)))"
 
     show(io, textmime, o2)
-    @test String(take!(io))[1:25] == "CompositeObject(1:4) ∪ "
-    # "CompositeObject(1:4) ∪ C₂ ∪ C₁\n\nC₁ = CompositeObject(11:20)\nC₂ = CompositeObject(5:10)"
+    @test String(take!(io))[1:32] == "CompositeObject(1, 2, 3, 4) ∪ "
 
     o3 = SetUnion( (SetUnion((c1,c2)),c3) )
     @test repr(o3) == "SetUnion((SetUnion((CompositeObject(1:4), CompositeObject(5:10))), CompositeObject(11:20)))"
     show(io, textmime, o3)
     @test String(take!(io))[1:6] == "S ∪ "
-    # "S ∪ C₁\n\nC₁ = CompositeObject(11:20)\nC₂ = CompositeObject(5:10)\nS = (CompositeObject(1:4)) ∪ C₂"
 
     m = StencilObject(cos, c1)
     @test Display.hasstencil(m)
     @test Display.displaystencil(m) == [Display.SymbolObject(cos), '(', c1, ')']
     @test repr(m) == "StencilObject(cos, CompositeObject(1:4))"
     show(io, textmime, m)
-    @test String(take!(io)) == "F(CompositeObject(1:4))\n\nF = cos"
+    @test String(take!(io)) == "F(CompositeObject(1, 2, 3, 4))\n\nF = cos"
 
     m1 = StencilObject(cos, c1)
     m2 = StencilObject(cos, c2)
@@ -44,6 +45,9 @@ const textmime = MIME"text/plain"()
     C = SetUnion((m1,m2,m3))
     @test repr(C) == "SetUnion((StencilObject(cos, CompositeObject(1:4)), StencilObject(cos, CompositeObject(5:10)), StencilObject(sin, CompositeObject(11:20))))"
     show(io, textmime, C)
-    @test String(take!(io))[1:6] == "S ∪ "
-    # "S ∪ F₁(C₂) ∪ F₂(C₁)\n\nC₁ = CompositeObject(11:20)\nC₂ = CompositeObject(5:10)\nS = F₁(CompositeObject(1:4))\nF₁ = cos\nF₂ = sin"
+    @test String(take!(io))[1] == 'F'
+
+    textc = CompositeObject(["abc", "def"])
+    show(io, textmime, textc)
+    @test String(take!(io)) == "CompositeObject(\"abc\", \"def\")"
 end

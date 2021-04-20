@@ -44,9 +44,8 @@ is_comma_separated(object) = combinationsymbol(object) == Comma()
 infix_string(object) = _infix_string(displaysymbol(combinationsymbol(object)))
 _infix_string(s) = s == ',' ? ", " : " " * s * " "
 
-
 maximum_depth(object) = 3
-maximum_replength(object) = 20
+maximum_replength(object) = 30
 maximum_textlength(object) = 60
 maximum_children(object) = 5
 
@@ -54,26 +53,28 @@ istext(el) = false
 istext(el::Char) = true
 istext(el::String) = true
 
+objectref(a) = istext(a) ? TextObject(a) : a
+
 concatenate_components(object) =
     concatenate(components(object), infix_string(object), maximum_children(object))
 function concatenate(list, sep, maxchildren = 5)
     A = Any[]
-    push!(A, list[1])
+    push!(A, objectref(list[1]))
     if length(list) > 1
         if length(list) <= maxchildren
             for i in 2:length(list)
                 push!(A, sep)
-                push!(A, list[i])
+                push!(A, objectref(list[i]))
             end
         else
             for i in 2:3
                 push!(A, sep)
-                push!(A, list[i])
+                push!(A, objectref(list[i]))
             end
             push!(A, sep)
             push!(A, "...")
             push!(A, sep)
-            push!(A, list[end])
+            push!(A, objectref(list[end]))
         end
     end
     A
@@ -121,6 +122,22 @@ function composite_displaystencil(object)
     end
 end
 
+"Objects in a display stencil can be wrapped in certain circumstances."
+abstract type WrappedObject end
+
+hasstencil(object::WrappedObject) = hasstencil(object.object)
+displaystencil(object::WrappedObject) = displaystencil(object.object)
+compact_repr(object::WrappedObject) = compact_repr(object.object)
+
+"""
+Display stencils treat text differently from other objects. If one of the
+components of an object is text, it can be wrapped in a `TextObject` in order
+to treat it as an object, rather than as text, in a stencil.
+"""
+struct TextObject <: WrappedObject
+    object
+end
+
 """
 Wrap an object along with a symbol for it.
 
@@ -132,17 +149,15 @@ string representation of `F` separately. In such a case the stencil of the objec
 In other words, `SymbolObject` forces an object to be represented by a symbol in
 a stencil.
 """
-struct SymbolObject{S}
+struct SymbolObject{S} <: WrappedObject
     object
     sym     ::  S
 end
 SymbolObject(object) = SymbolObject(object, displaysymbol(object))
 displaysymbol(object::SymbolObject) = object.sym
-hasstencil(object::SymbolObject) = hasstencil(object.object)
-displaystencil(object::SymbolObject) = displaystencil(object.object)
-compact_repr(object::SymbolObject) = compact_repr(object.object)
 
-"Return all objects appearing in the stencil array."
+
+"Return all objects appearing in the display stencil."
 stencil_objects(object) = objects(displaystencil(object))
 objects(A::Vector) = unique([el for el in A if !istext(el)])
 
@@ -232,7 +247,14 @@ function recursive_stencil_reps(object, stencils, maxreplength, reps = Dict{Any,
 end
 
 # Different operators with the same symbol get added subscripts
-subscript(i::Integer) = (@assert i < 10; join('₀'+d for d in reverse(digits(i))))
+function subscript(i::Integer)
+    @assert i >= 0
+    if i < 10
+        join('₀'+d for d in reverse(digits(i)))
+    else
+        subscript(div(i,10)) * subscript(mod(i,10))
+    end
+end
 
 "Assign symbols to all objects in the list, adding subscripts if necessary."
 function allocate_symbols(subs)
