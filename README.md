@@ -66,6 +66,7 @@ Both the `ProductDomain` and `UnionDomain` types are composite types. They
 combine their components using a `combinationsymbol`, in this case `∪` and `×`.
 The output above is achieved with the definitions, for `ProductDomain`:
 ```julia
+using CompositeTypes.Display
 Display.combinationsymbol(d::ProductDomain) = Display.Symbol('×')
 Display.displaystencil(d::ProductDomain) = composite_displaystencil(d)
 
