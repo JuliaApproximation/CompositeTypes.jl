@@ -16,6 +16,12 @@ typename(object) = string(typeof(object))
 displaysymbol(object) = typename(object)[1]
 displaysymbol(object::Function) = 'F'
 
+# some common types
+Display.displaysymbol(A::AbstractArray) = 'A'
+Display.displaysymbol(A::AbstractVector) = 'v'
+Display.displaysymbol(x::Number) = 'c'
+
+
 "Representation of a symbol."
 struct Symbol{S}
     sym ::  S
@@ -55,8 +61,14 @@ istext(el::String) = true
 
 objectref(a) = istext(a) ? TextObject(a) : a
 
-concatenate_components(object) =
-    concatenate(components(object), infix_string(object), maximum_children(object))
+function concatenate_components(object; reversecomponents = false)
+    list = components(object)
+    if reversecomponents
+        list = reverse(list)
+    end
+    concatenate(list, infix_string(object), maximum_children(object))
+end
+
 function concatenate(list, sep, maxchildren = 5)
     A = Any[]
     push!(A, objectref(list[1]))
@@ -111,14 +123,14 @@ unless the `combinationsymbol` of the object is defined differently. In the
 latter case, if the combination symbol is '+' the stencil leads to
 `component1 + component2 + ...`.
 """
-function composite_displaystencil(object)
+function composite_displaystencil(object; kwargs...)
     if is_comma_separated(object)
         A1 = [constructorname(object), '(']
-        A2 = concatenate_components(object)
+        A2 = concatenate_components(object; kwargs...)
         A3 = [')']
         vcat(A1, A2, A3)
     else
-        concatenate_components(object)
+        concatenate_components(object; kwargs...)
     end
 end
 
