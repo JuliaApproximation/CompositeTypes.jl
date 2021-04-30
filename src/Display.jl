@@ -17,10 +17,11 @@ displaysymbol(object) = typename(object)[1]
 displaysymbol(object::Function) = 'F'
 
 # some common types
-Display.displaysymbol(A::AbstractArray) = 'A'
-Display.displaysymbol(A::AbstractVector) = 'v'
-Display.displaysymbol(x::Number) = 'c'
+displaysymbol(A::AbstractArray) = 'A'
+displaysymbol(A::AbstractVector) = 'v'
+displaysymbol(x::Number) = 'c'
 
+object_parentheses(a::Complex) = true
 
 "Representation of a symbol."
 struct Symbol{S}
@@ -139,6 +140,7 @@ abstract type WrappedObject end
 
 hasstencil(object::WrappedObject) = hasstencil(object.object)
 displaystencil(object::WrappedObject) = displaystencil(object.object)
+stencil_parentheses(object::WrappedObject) = stencil_parentheses(object.object)
 compact_repr(object::WrappedObject) = compact_repr(object.object)
 
 """
@@ -167,7 +169,6 @@ struct SymbolObject{S} <: WrappedObject
 end
 SymbolObject(object) = SymbolObject(object, displaysymbol(object))
 displaysymbol(object::SymbolObject) = object.sym
-
 
 "Return all objects appearing in the display stencil."
 stencil_objects(object) = objects(displaystencil(object))
