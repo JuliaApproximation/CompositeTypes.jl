@@ -45,8 +45,10 @@ similarindex(idx::Component, I) = Component(I)
 to_index(idx::Component) = idx.i
 
 
-# These two lines enables indexing of components
-Base.getindex(x, I::ComponentIndex...) = component(x, map(to_index, I)...)
-Base.setindex!(x, val, I::ComponentIndex...) = setcomponent!(x, val, map(to_index, I)...)
+## These two lines can be used to enable indexing of components for a custom
+## composite types. In that case, the type of x should be specified in order to
+## avoid ambiguities:
+# Base.getindex(x::MyCompositeType, I::ComponentIndex...) = component(x, map(to_index, I)...)
+# Base.setindex!(x::MyCompositeType, val, I::ComponentIndex...) = setcomponent!(x, val, map(to_index, I)...)
 
 end
