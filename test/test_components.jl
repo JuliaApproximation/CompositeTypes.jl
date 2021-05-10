@@ -18,6 +18,11 @@
     @test component(c2, 2) == 4
 end
 
+Base.getindex(x::CompositeObject, I::ComponentIndex...) =
+    component(x, map(Indexing.to_index, I)...)
+Base.setindex!(x::CompositeObject, val, I::ComponentIndex...) =
+    setcomponent!(x, val, map(Indexing.to_index, I)...)
+
 @testset "Indexing" begin
     c1 = CompositeObject([1, 2, 3, 4])
     @test c1[Component(1)] == 1
