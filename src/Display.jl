@@ -180,7 +180,8 @@ The conventional compact representation of an object.
 This representation is based on `show(io, d)`. If an object has overriden
 that method, it can also override this one to avoid a loop.
 """
-compact_repr(object) = repr(object)
+compact_repr(object) = repr("text/plain", object;
+    context = IOContext(stdout, :compact => true, :limit => true))
 
 """
 Recursively compute all stencils of the objects linked to by the given object,
