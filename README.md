@@ -3,7 +3,7 @@
 [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://JuliaApproximation.github.io/CompositeTypes.jl/dev)
 [![Build Status](https://github.com/JuliaApproximation/CompositeTypes.jl/workflows/CI/badge.svg)](https://github.com/JuliaApproximation/CompositeTypes.jl/actions)
 [![Coverage Status](https://codecov.io/gh/JuliaApproximation/CompositeTypes.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/JuliaApproximation/CompositeTypes.jl)
-
+[![Aqua QA](https://raw.githubusercontent.com/JuliaTesting/Aqua.jl/master/badge.svg)](https://github.com/JuliaTesting/Aqua.jl)
 
 
 CompositeTypes.jl defines an interface for types that consist of multiple components.
