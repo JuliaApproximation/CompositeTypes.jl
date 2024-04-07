@@ -12,7 +12,11 @@ using ..CompositeTypes
 
 typename(object) = string(typeof(object))
 
-"What is the standard display symbol of the object?"
+"""
+    displaysymbol(object)
+
+What is the standard display symbol of the object?
+"""
 displaysymbol(object) = typename(object)[1]
 displaysymbol(object::Function) = 'F'
 
@@ -23,7 +27,7 @@ displaysymbol(x::Number) = 'c'
 
 object_parentheses(a::Complex) = true
 
-"Representation of a symbol."
+# Representation of a symbol.
 struct Symbol{S}
     sym ::  S
 end
@@ -36,6 +40,8 @@ Plus() = Symbol('+')
 
 
 """
+    combinationsymbol(object)
+
 For composite objects, what is their combination symbol?
 
 By default objects are comma separated, of the form `F(a, b, c)` where `F` is
@@ -93,7 +99,11 @@ function concatenate(list, sep, maxchildren = 5)
     A
 end
 
-"Does the object have a stencil?"
+"""
+    hasstencil(object)
+
+Does the object have a stencil?
+"""
 hasstencil(object) = length(displaystencil(object)) > 0
 
 """
@@ -139,7 +149,7 @@ function composite_displaystencil(object; kwargs...)
     end
 end
 
-"Objects in a display stencil can be wrapped in certain circumstances."
+#Objects in a display stencil can be wrapped in certain circumstances.
 abstract type WrappedObject end
 
 hasstencil(object::WrappedObject) = hasstencil(object.object)
@@ -147,26 +157,22 @@ displaystencil(object::WrappedObject) = displaystencil(object.object)
 stencil_parentheses(object::WrappedObject) = stencil_parentheses(object.object)
 compact_repr(object::WrappedObject) = compact_repr(object.object)
 
-"""
-Display stencils treat text differently from other objects. If one of the
-components of an object is text, it can be wrapped in a `TextObject` in order
-to treat it as an object, rather than as text, in a stencil.
-"""
+# Display stencils treat text differently from other objects. If one of the
+# components of an object is text, it can be wrapped in a `TextObject` in order
+# to treat it as an object, rather than as text, in a stencil.
 struct TextObject <: WrappedObject
     object
 end
 
-"""
-Wrap an object along with a symbol for it.
-
-This can be useful in displaystencils of the form `F(a,b)` when `F` itself has
-a stencil. It is usually best to represent `F` by a symbol, and to list the
-string representation of `F` separately. In such a case the stencil of the object
-`O` represented by `F(a,b)` would be `[SymbolObject(F), '(', a, b, ')']`.
-
-In other words, `SymbolObject` forces an object to be represented by a symbol in
-a stencil.
-"""
+# Wrap an object along with a symbol for it.
+#
+# This can be useful in displaystencils of the form `F(a,b)` when `F` itself has
+# a stencil. It is usually best to represent `F` by a symbol, and to list the
+# string representation of `F` separately. In such a case the stencil of the object
+# `O` represented by `F(a,b)` would be `[SymbolObject(F), '(', a, b, ')']`.
+#
+# In other words, `SymbolObject` forces an object to be represented by a symbol in
+# a stencil.
 struct SymbolObject{S} <: WrappedObject
     object
     sym     ::  S
@@ -193,13 +199,11 @@ that method, it can also override this one to avoid a loop.
 compact_repr(object) = repr("text/plain", object;
     context = IOContext(stdout, :compact => true, :limit => true))
 
-"""
-Recursively compute all stencils of the objects linked to by the given object,
-up to a maximum depth of recursion. There can be self-referential objects
-in the stencils.
-
-The result is returned as a dictionary that maps objects to stencils.
-"""
+# Recursively compute all stencils of the objects linked to by the given object,
+# up to a maximum depth of recursion. There can be self-referential objects
+# in the stencils.
+#
+# The result is returned as a dictionary that maps objects to stencils.
 function recursive_stencils(object, depth = 1, maxdepth = maximum_depth(object),
                                 stencils = Dict{Any,Any}())
     if depth > maxdepth
@@ -248,7 +252,7 @@ function object_parentheses(object)
     end
 end
 
-"Compute representations of all stencils linked to by the object."
+#Compute representations of all stencils linked to by the object.
 function recursive_stencil_reps(object, stencils, maxreplength, reps = Dict{Any,Any}(), subs = Dict{Any,Any}())
     if object ∈ keys(reps)
         return reps, subs
@@ -288,7 +292,7 @@ function subscript(i::Integer)
     end
 end
 
-"Assign symbols to all objects in the list, adding subscripts if necessary."
+#Assign symbols to all objects in the list, adding subscripts if necessary.
 function allocate_symbols(subs)
     invsubs = Dict{Any,Any}()
     for k in keys(subs)
