@@ -1,21 +1,17 @@
 # CompositeTypes.jl
 
-[![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://JuliaApproximation.github.io/CompositeTypes.jl/dev)
-[![Build Status](https://github.com/JuliaApproximation/CompositeTypes.jl/workflows/CI/badge.svg)](https://github.com/JuliaApproximation/CompositeTypes.jl/actions)
-[![Coverage Status](https://codecov.io/gh/JuliaApproximation/CompositeTypes.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/JuliaApproximation/CompositeTypes.jl)
-
-
-
 CompositeTypes.jl defines an interface for types that consist of multiple components.
 
 ## Interface
 
-The package defines:
-- `iscomposite(x)`: true if `x` is a composite object
-- `components(x)`: returns the components of `x`
-- `component(x, I...)`: returns `components(x)[I...]`
-- `ncomponents(x)`: the number of components of `x`
-- `setcomponent!(x, v, I...)`: (if applicable) set a component to a given value
+The package defines the following functions:
+```@docs; canonical=false
+iscomposite(x)
+components(x)
+component(x, I...)
+ncomponents(x)
+setcomponent!(x, v, I...)
+```
 
 A type can declare to be composite simply by implementing `components(x)`, and
 returning something with non-zero `length`.
@@ -43,6 +39,8 @@ julia> d[Component(1):Component(2)]
 ```
 
 ## Display
+
+### Examples
 
 Composite types can opt-in to a structured multi-line representation by
 defining a display stencil and specializing `show`. An example, again using
@@ -85,4 +83,10 @@ or character ends up being displayed, and each object is replaced by its own
 display stencil or by a compact string representation. For example:
 ```julia
 Display.displaystencil(object::LinearMap) = [object.A, " * x + ", object.b]
+```
+
+### Relevant functions
+
+```@docs; canonical=false
+Display.displaystencil
 ```

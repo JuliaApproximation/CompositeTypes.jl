@@ -97,6 +97,8 @@ end
 hasstencil(object) = length(displaystencil(object)) > 0
 
 """
+    displaystencil(object)
+
 Return the stencil of the object as an array.
 
 The stencil of an object determines how it is displayed. The array may
@@ -117,6 +119,8 @@ displaystencil(object) = []
 constructorname(object) = typename(object)
 
 """
+    composite_displaystencil(object; kwargs...)
+
 Default display stencil for composite objects.
 
 The default leads to the representation `typename(component1, components2, ...)`,
@@ -170,11 +174,17 @@ end
 SymbolObject(object) = SymbolObject(object, displaysymbol(object))
 displaysymbol(object::SymbolObject) = object.sym
 
-"Return all objects appearing in the display stencil."
+"""
+    stencil_objects(object)
+
+Return all objects appearing in the display stencil.
+"""
 stencil_objects(object) = objects(displaystencil(object))
 objects(A::Vector) = unique([el for el in A if !istext(el)])
 
 """
+    compact_repr(object)
+
 The conventional compact representation of an object.
 
 This representation is based on `show(io, d)`. If an object has overriden
@@ -212,7 +222,11 @@ function recursive_stencils(object, depth = 1, maxdepth = maximum_depth(object),
     stencils
 end
 
-"If an object in the stencil is complicated, should we put parentheses around it?"
+"""
+    stencil_parentheses(object)
+
+If an object in the stencil is complicated, should we put parentheses around it?
+"""
 function stencil_parentheses(object)
     if hasstencil(object)
         iscomposite(object) && !is_comma_separated(object)
@@ -221,7 +235,11 @@ function stencil_parentheses(object)
     end
 end
 
-"If this object appears in a more complicated expression, does it require parentheses?"
+"""
+    object_parentheses(object)
+
+If this object appears in a more complicated expression, does it require parentheses?
+"""
 function object_parentheses(object)
     if iscomposite(object)
         !is_comma_separated(object)
@@ -324,6 +342,8 @@ end
 
 
 """
+    composite_show(io::IO, ::MIME"text/plain", object)
+
 Display multi-line structured information about a composite object,
 using the stencil of the object and, recursively, the stencils of any objects
 therein.
@@ -368,6 +388,8 @@ function composite_show(io::IO, object)
 end
 
 """
+    composite_show_compact(io::IO, object)
+
 Display structured information about a composite object using its stencil,
 but not recursively.
 """

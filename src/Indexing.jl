@@ -5,7 +5,11 @@ export Component, ComponentIndex
 using ..CompositeTypes
 
 
-"Supertype of indices that select components of an object rather than its entries."
+"""
+    ComponentIndex{I}
+
+Supertype of indices that select components of an object rather than its entries.
+"""
 abstract type ComponentIndex{I} end
 
 import Base.(:)
@@ -29,6 +33,8 @@ function _iterate(idx::ComponentIndex, it)
 end
 
 """
+    Component{I}
+
 Component index of a composite type.
 
 Internally, this index simply stores an index or a range of indices to
@@ -38,10 +44,18 @@ struct Component{I} <: ComponentIndex{I}
     i   ::  I
 end
 
-"Create a new component index of the same type but with a different value."
+"""
+    similarindex(idx::Component, I)
+
+Create a new component index of the same type but with a different value.
+"""
 similarindex(idx::Component, I) = Component(I)
 
-"Convert the component index to an index of `components`."
+"""
+    to_index(idx::Component)
+
+Convert the component index to an index of `components`.
+"""
 to_index(idx::Component) = idx.i
 
 

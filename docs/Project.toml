@@ -1,0 +1,6 @@
+[deps]
+Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+CompositeTypes = "b152e2b5-7a66-4b01-a709-34e65c35f657"
+
+[compat]
+Documenter = "1.3"
